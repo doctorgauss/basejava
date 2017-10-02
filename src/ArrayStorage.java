@@ -14,7 +14,7 @@ public class ArrayStorage {
         if (r == null) return;
         if (storage == null){
             storage = new Resume[10000];
-            int sizeStorage = 0;
+            sizeStorage = 0;
         }
 
         if (storage.length == sizeStorage){
