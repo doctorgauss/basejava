@@ -2,8 +2,8 @@
  * Array based storage for Resumes
  */
 public class ArrayStorage {
-    Resume[] storage = new Resume[10000];
-    int sizeStorage = 0;
+    private Resume[] storage = new Resume[10000];
+    private int sizeStorage = 0;
 
     void clear() {
         storage = new Resume[10000];
@@ -17,42 +17,47 @@ public class ArrayStorage {
             sizeStorage = 0;
         }
 
+        if (findNumberResume(r.uuid) != null){
+            System.out.println("Такое резюме уже есть в базе данных");
+            return;
+        }
+
         if (storage.length == sizeStorage){
-            Resume[] newStorage = new Resume[storage.length + 10000];
-            for (int i = 0; i < storage.length; i++){
-                newStorage[i] = storage[i];
-            }
-            storage = newStorage;
+            System.out.println("База резюме переполнена. Резюме не сохранено.");
+            return;
         }
         storage[sizeStorage++] = r;
     }
 
-    Resume get(String uuid) {
-        if (storage == null | uuid == null)
-            return null;
-        for (int i = 0; i < sizeStorage; i++) {
-            if (storage[i].toString().equals(uuid)){
-                return storage[i];
-            }
+    void update(Resume r){
+        Integer numberResume = findNumberResume(r.uuid);
+        if (numberResume == null) {
+            System.out.println("Резюме не найдено");
+            return;
         }
-        return null;
+        storage[numberResume] = r;
+    }
+
+    Resume get(String uuid) {
+        Integer numberResume = findNumberResume(uuid);
+        if (numberResume == null) return null;
+        return storage[numberResume];
     }
 
     void delete(String uuid) {
-        if (storage == null | uuid == null | sizeStorage == 0)
+        Integer numberResume = findNumberResume(uuid);
+        if (numberResume == null){
+            System.out.println("Резюме не найдено.");
             return;
-        for (int i = 0; i < sizeStorage; i++){
-            if (storage[i].toString() == uuid){
-                if (i == sizeStorage - 1){
-                    storage[i] = null;
-                } else {
-                    storage[i] = storage[sizeStorage-1];
-                    storage[sizeStorage-1] = null;
-                }
-                sizeStorage--;
-                break;
-            }
         }
+
+        if (numberResume == sizeStorage - 1){
+            storage[numberResume] = null;
+        } else {
+            storage[numberResume] = storage[sizeStorage-1];
+            storage[sizeStorage-1] = null;
+        }
+        sizeStorage--;
     }
 
     /**
@@ -71,5 +76,15 @@ public class ArrayStorage {
 
     int size() {
         return sizeStorage;
+    }
+
+    private Integer findNumberResume(String uuid){
+        if (storage == null | uuid == null | sizeStorage == 0)
+            return null;
+        for(int i = 0; i < sizeStorage; i++){
+            if (storage[i].uuid.equals(uuid))
+                return i;
+        }
+        return null;
     }
 }
