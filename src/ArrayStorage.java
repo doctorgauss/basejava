@@ -2,20 +2,17 @@
  * Array based storage for Resumes
  */
 public class ArrayStorage {
-    private Resume[] storage = new Resume[10000];
+    private final Resume[] storage = new Resume[10000];
     private int sizeStorage = 0;
 
     void clear() {
-        storage = new Resume[10000];
+        for (int i = 0; i < sizeStorage; i++)
+            storage[i] = null;
         sizeStorage = 0;
     }
 
     void save(Resume r) {
         if (r == null) return;
-        if (storage == null){
-            storage = new Resume[10000];
-            sizeStorage = 0;
-        }
 
         if (findNumberResume(r.uuid) != null){
             System.out.println("Такое резюме уже есть в базе данных");
@@ -40,7 +37,10 @@ public class ArrayStorage {
 
     Resume get(String uuid) {
         Integer numberResume = findNumberResume(uuid);
-        if (numberResume == null) return null;
+        if (numberResume == null){
+            System.out.println("Резюме не найдено.");
+            return null;
+        }
         return storage[numberResume];
     }
 
@@ -68,9 +68,7 @@ public class ArrayStorage {
             return  new Resume[0];
         }
         Resume[] newStorage = new Resume[sizeStorage];
-        for (int i = 0; i < sizeStorage; i++) {
-            newStorage[i] = storage[i];
-        }
+        System.arraycopy(storage, 0, newStorage, 0, sizeStorage);
         return newStorage;
     }
 
@@ -79,7 +77,7 @@ public class ArrayStorage {
     }
 
     private Integer findNumberResume(String uuid){
-        if (storage == null | uuid == null | sizeStorage == 0)
+        if (uuid == null | sizeStorage == 0)
             return null;
         for(int i = 0; i < sizeStorage; i++){
             if (storage[i].uuid.equals(uuid))
