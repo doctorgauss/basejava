@@ -15,6 +15,7 @@ public class ArrayStorage extends AbstractArrayStorage {
     }
 
     public void update(Resume r){
+        if (!check(r)) return;
         int index = getIndex(r.getUuid());
         if (index == -1){
             System.out.println("Резюме " + r.getUuid() + " не найдено");
@@ -24,6 +25,7 @@ public class ArrayStorage extends AbstractArrayStorage {
     }
 
     public void save(Resume r) {
+        if (!check(r)) return;
         if (getIndex(r.getUuid()) != -1){
             System.out.println("Резюме " + r.getUuid() + " уже есть в базе");
         } else if (size >= STORAGE_LIMIT){
@@ -50,6 +52,7 @@ public class ArrayStorage extends AbstractArrayStorage {
     }
 
     protected int getIndex(String uuid){
+        if (uuid == null) return -1;
         for (int i = 0; i < size; i++){
             if (uuid.equals((storage[i].getUuid()))){
                 return i;
@@ -57,4 +60,5 @@ public class ArrayStorage extends AbstractArrayStorage {
         }
         return -1;
     }
+
 }
