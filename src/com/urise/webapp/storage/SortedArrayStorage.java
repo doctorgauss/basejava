@@ -1,26 +1,10 @@
-package storage;
+package com.urise.webapp.storage;
 
-import model.Resume;
+import com.urise.webapp.model.Resume;
 
 import java.util.Arrays;
 
 public class SortedArrayStorage extends AbstractArrayStorage {
-    @Override
-    public void clear() {
-        Arrays.fill(storage,0,size,null);
-        size = 0;
-    }
-
-    @Override
-    public void update(Resume r) {
-        if (!check(r)) return;
-        int index = getIndex(r.getUuid());
-        if (index == -1){
-            System.out.println("Резюме " + r.getUuid() + " не найдено");
-        } else {
-            storage[index] = r;
-        }
-    }
 
     @Override
     public void save(Resume r) {
@@ -66,11 +50,6 @@ public class SortedArrayStorage extends AbstractArrayStorage {
             storage[size-1] = null;
         }
         size--;
-    }
-
-    @Override
-    public Resume[] getAll() {
-        return Arrays.copyOf(storage, size);
     }
 
     @Override
