@@ -10,7 +10,7 @@ public class ArrayStorage extends AbstractArrayStorage {
 
     public void save(Resume r) {
         if (!check(r)) return;
-        if (getIndex(r.getUuid()) != -1){
+        if (getIndex(r.getUuid()) >= 0){
             System.out.println("Резюме " + r.getUuid() + " уже есть в базе");
         } else if (size >= STORAGE_LIMIT){
             System.out.println("База резюме переполнена");
@@ -22,7 +22,7 @@ public class ArrayStorage extends AbstractArrayStorage {
 
     public void delete(String uuid) {
         int index = getIndex(uuid);
-        if (index == -1){
+        if (index < 0){
             System.out.println("Резюме " + uuid + " не найдено");
         } else {
             storage[index] = storage[size-1];

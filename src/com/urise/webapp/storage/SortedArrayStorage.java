@@ -38,7 +38,7 @@ public class SortedArrayStorage extends AbstractArrayStorage {
     @Override
     public void delete(String uuid) {
         int index = getIndex(uuid);
-        if (index == -1){
+        if (index < 0){
             System.out.println("Резюме " + uuid + " не найдено");
             return;
         }
