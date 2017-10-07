@@ -13,7 +13,6 @@ public class SortedArrayStorage extends AbstractArrayStorage {
             System.out.println("База переполнена");
             return;
         }
-        int testIndex = getIndex(r.getUuid());
         if (getIndex(r.getUuid()) >= 0){
             System.out.println("Такое резюме уже есть в базе");
             return;
