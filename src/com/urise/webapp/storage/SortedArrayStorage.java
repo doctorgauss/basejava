@@ -8,10 +8,11 @@ public class SortedArrayStorage extends AbstractArrayStorage {
 
     @Override
     protected void insertElement(Resume r, int index) {
-        for (int i = size-1; i >= index; i--){
+        int indexForInsert = - index - 1;
+        for (int i = size-1; i >= indexForInsert; i--){
             storage[i+1] = storage[i];
         }
-        storage[index] = r;
+        storage[indexForInsert] = r;
     }
 
     @Override
