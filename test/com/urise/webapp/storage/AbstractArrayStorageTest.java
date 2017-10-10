@@ -6,7 +6,13 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class AbstractArrayStorageTest {
+public abstract class AbstractArrayStorageTest {
+    private final Storage storage;
+
+    protected AbstractArrayStorageTest(Storage storage){
+        this.storage = storage;
+    }
+
     @Before
     public void setUp() throws Exception {
     }
