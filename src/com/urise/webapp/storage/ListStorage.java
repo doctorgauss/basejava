@@ -1,4 +1,4 @@
 package com.urise.webapp.storage;
 
-public class ListStorage extends AbstractStorage {
+public abstract class ListStorage extends AbstractStorage {
 }

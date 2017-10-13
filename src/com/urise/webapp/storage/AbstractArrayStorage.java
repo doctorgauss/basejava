@@ -14,44 +14,29 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     protected int size = 0;
 
     public void clear() {
-        Arrays.fill(storage,0,size,null);
+        Arrays.fill(storage, 0, size, null);
         size = 0;
     }
 
-    public void update(Resume r){
-        if (!check(r)) return;
-        int index = getIndex(r.getUuid());
-        if (index < 0){
-            throw new NotExistStorageException(r.getUuid());
-        } else {
-            storage[index] = r;
-        }
+    protected void doUpdate(Resume r, Object index) {
+        storage[(Integer) index] = r;
     }
 
-    public void save(Resume r) {
-        if (!check(r)) return;
-        int index = getIndex(r.getUuid());
-        if (index >= 0){
-            throw new ExistStorageException(r.getUuid());
-        } else if (size >= STORAGE_LIMIT){
+    public void doSave(Resume r, Object index) {
+        if (size >= STORAGE_LIMIT) {
             throw new StorageException("База резюме переполнена", r.getUuid());
         } else {
-            insertElement(r, index);
+            insertElement(r, (Integer) index);
             size++;
         }
     }
 
     protected abstract void insertElement(Resume r, int index);
 
-    public void delete(String uuid) {
-        int index = getIndex(uuid);
-        if (index < 0){
-            throw new NotExistStorageException(uuid);
-        } else {
-            fillDeletedElement(index);
-            storage[size-1] = null;
-            size--;
-        }
+    public void doDelete(Object index) {
+        fillDeletedElement((Integer) index);
+        storage[size - 1] = null;
+        size--;
     }
 
     protected abstract void fillDeletedElement(int index);
@@ -60,24 +45,13 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         return Arrays.copyOf(storage, size);
     }
 
-    public int size(){
+    public int size() {
         return size;
     }
 
-    public Resume get(String uuid){
-        int index = getIndex(uuid);
-        if (index < 0){
-            throw new NotExistStorageException(uuid);
-        }
-        return storage[index];
+    public Resume doGet(Object index) {
+        return storage[(Integer) index];
     }
 
     protected abstract int getIndex(String uuid);
-
-    protected boolean check(Resume r){
-        if (r == null || r.getUuid() == null){
-            throw new StorageException("Резюме не соответствует формату", null);
-        }
-        return true;
-    }
 }

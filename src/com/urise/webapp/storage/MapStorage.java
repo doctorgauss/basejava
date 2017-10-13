@@ -1,4 +1,4 @@
 package com.urise.webapp.storage;
 
-public class MapStorage extends AbstractStorage {
+public abstract class MapStorage extends AbstractStorage {
 }
