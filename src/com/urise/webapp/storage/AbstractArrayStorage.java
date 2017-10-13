@@ -7,7 +7,7 @@ import com.urise.webapp.model.Resume;
 
 import java.util.Arrays;
 
-public abstract class AbstractArrayStorage implements Storage {
+public abstract class AbstractArrayStorage extends AbstractStorage implements Storage {
     protected static final int STORAGE_LIMIT = 10000;
 
     protected final Resume[] storage = new Resume[STORAGE_LIMIT];
@@ -74,10 +74,10 @@ public abstract class AbstractArrayStorage implements Storage {
 
     protected abstract int getIndex(String uuid);
 
-    protected boolean check(Resume r){
-        if (r == null || r.getUuid() == null){
-            throw new StorageException("Резюме не соответствует формату", null);
-        }
-        return true;
-    }
+//    protected boolean check(Resume r){
+//        if (r == null || r.getUuid() == null){
+//            throw new StorageException("Резюме не соответствует формату", null);
+//        }
+//        return true;
+//    }
 }
