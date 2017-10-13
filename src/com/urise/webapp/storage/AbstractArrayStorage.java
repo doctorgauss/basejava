@@ -18,6 +18,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         size = 0;
     }
 
+    @Override
     protected void doUpdate(Resume r, Object index) {
         storage[(Integer) index] = r;
     }
@@ -33,6 +34,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
 
     protected abstract void insertElement(Resume r, int index);
 
+    @Override
     public void doDelete(Object index) {
         fillDeletedElement((Integer) index);
         storage[size - 1] = null;
@@ -49,9 +51,16 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         return size;
     }
 
+    @Override
     public Resume doGet(Object index) {
         return storage[(Integer) index];
     }
 
-    protected abstract int getIndex(String uuid);
+    @Override
+    protected boolean isExistSearchKey(Object index) {
+        if ((Integer) index < 0)
+            return false;
+        else return true;
+    }
+
 }
