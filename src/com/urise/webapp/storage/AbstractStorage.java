@@ -5,10 +5,6 @@ import com.urise.webapp.exception.NotExistStorageException;
 import com.urise.webapp.exception.StorageException;
 import com.urise.webapp.model.Resume;
 
-import java.util.Arrays;
-
-import static com.urise.webapp.storage.AbstractArrayStorage.STORAGE_LIMIT;
-
 public abstract class AbstractStorage implements Storage {
 
     protected abstract void doUpdate(Resume r, Object searchKey);
