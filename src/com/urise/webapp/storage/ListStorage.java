@@ -8,7 +8,6 @@ import java.util.List;
 public class ListStorage extends AbstractStorage {
     private final List<Resume> storage = new ArrayList<>(0);
 
-
     @Override
     public void clear() {
         storage.clear();
@@ -31,9 +30,7 @@ public class ListStorage extends AbstractStorage {
 
     @Override
     protected boolean isExistSearchKey(Object index) {
-        if ((Integer) index < 0)
-            return false;
-        else return true;
+        return (Integer) index >= 0;
     }
 
     @Override
