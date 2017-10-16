@@ -5,6 +5,8 @@ import com.urise.webapp.exception.NotExistStorageException;
 import com.urise.webapp.exception.StorageException;
 import com.urise.webapp.model.Resume;
 
+import java.util.*;
+
 public abstract class AbstractStorage implements Storage {
 
     protected abstract void doUpdate(Resume r, Object searchKey);
@@ -41,8 +43,17 @@ public abstract class AbstractStorage implements Storage {
         return doGet(searchKey);
     }
 
+    @Override
+    public List<Resume> getAllSorted(){
+        List<Resume> list = doCopyAll();
+        Collections.sort(list);
+        return list;
+    }
+
+    protected abstract List<Resume> doCopyAll();
+
     private boolean check(Resume r) {
-        if (r == null || r.getUuid() == null) {
+        if (r == null || r.getUuid() == null || r.getFullName() == null) {
             throw new StorageException("Резюме не соответствует формату", null);
         }
         return true;

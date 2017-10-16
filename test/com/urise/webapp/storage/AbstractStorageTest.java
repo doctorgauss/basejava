@@ -8,16 +8,18 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.*;
 
 public abstract class AbstractStorageTest {
     protected final Storage storage;
-    Resume r1 = new Resume("uuid1");
-    Resume r2 = new Resume("uuid2");
-    Resume r3 = new Resume("uuid3");
-    Resume r4 = new Resume("uuid4");
+    Resume r1 = new Resume("Имя 1");
+    Resume r2 = new Resume("Имя 2");
+    Resume r3 = new Resume("Имя 3");
+    Resume r4 = new Resume("Имя 4");
 
     protected AbstractStorageTest(Storage storage) {
         this.storage = storage;
@@ -44,7 +46,7 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void update() throws Exception {
-        Resume newResume = new Resume(r1.getUuid());
+        Resume newResume = new Resume(r1.getUuid(), "Новое имя");
         storage.update(newResume);
         assertTrue(newResume == storage.get(newResume.getUuid()));
     }
@@ -92,9 +94,7 @@ public abstract class AbstractStorageTest {
     public void getAllSorted() throws Exception {
         List<Resume> resumes = storage.getAllSorted();
         assertEquals(3, resumes.size());
-        assertEquals(r1, resumes.get(0));
-        assertEquals(r2, resumes.get(1));
-        assertEquals(r3, resumes.get(2));
+        assertEquals(resumes, Arrays.asList(r1, r2, r3));
     }
 
     @Test

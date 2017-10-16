@@ -20,6 +20,11 @@ public class MapUuidStorage extends AbstractStorage {
     }
 
     @Override
+    protected List<Resume> doCopyAll() {
+        return new ArrayList<>(storage.values());
+    }
+
+    @Override
     public int size() {
         return storage.size();
     }
@@ -39,7 +44,7 @@ public class MapUuidStorage extends AbstractStorage {
         if (uuid == null) return null;
         Resume r = storage.get(uuid);
         if (r == null) return null;
-        return storage.get(uuid).getUuid();
+        return r.getUuid();
     }
 
     @Override
