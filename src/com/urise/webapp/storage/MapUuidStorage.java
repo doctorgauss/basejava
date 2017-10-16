@@ -2,15 +2,17 @@ package com.urise.webapp.storage;
 
 import com.urise.webapp.model.Resume;
 
-public class MapStorage extends AbstractStorage {
+import java.util.List;
+
+public abstract class MapUuidStorage extends AbstractStorage {
     @Override
     public void clear() {
 
     }
 
     @Override
-    public Resume[] getAll() {
-        return new Resume[0];
+    public List<Resume> getAllSorted() {
+        return null;
     }
 
     @Override

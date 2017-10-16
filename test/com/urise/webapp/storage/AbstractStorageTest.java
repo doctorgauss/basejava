@@ -8,6 +8,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 public abstract class AbstractStorageTest {
@@ -87,12 +89,12 @@ public abstract class AbstractStorageTest {
 
 
     @Test
-    public void getAll() throws Exception {
-        Resume[] resumes = storage.getAll();
-        assertEquals(3, resumes.length);
-        assertEquals(r1, resumes[0]);
-        assertEquals(r2, resumes[1]);
-        assertEquals(r3, resumes[2]);
+    public void getAllSorted() throws Exception {
+        List<Resume> resumes = storage.getAllSorted();
+        assertEquals(3, resumes.size());
+        assertEquals(r1, resumes.get(0));
+        assertEquals(r2, resumes.get(1));
+        assertEquals(r3, resumes.get(2));
     }
 
     @Test

@@ -41,7 +41,7 @@ public abstract class AbstractStorage implements Storage {
         return doGet(searchKey);
     }
 
-    protected boolean check(Resume r) {
+    private boolean check(Resume r) {
         if (r == null || r.getUuid() == null) {
             throw new StorageException("Резюме не соответствует формату", null);
         }
