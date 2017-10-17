@@ -43,8 +43,7 @@ public class MapUuidStorage extends AbstractStorage {
     protected Object getSearchKey(String uuid) {
         if (uuid == null) return null;
         Resume r = storage.get(uuid);
-        if (r == null) return null;
-        return r.getUuid();
+        return r == null ? null : r.getUuid();
     }
 
     @Override
