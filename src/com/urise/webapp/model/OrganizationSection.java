@@ -1,10 +1,13 @@
 package com.urise.webapp.model;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class OrganizationSection extends Section {
     private final List<Organization> organizations;
+
+    public OrganizationSection(Organization ... organizations){
+        this(Arrays.asList(organizations));
+    }
 
     public OrganizationSection(List<Organization> organizations) {
         Objects.requireNonNull(organizations, "Организация не задана");

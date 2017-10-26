@@ -45,6 +45,10 @@ public class Organization {
         private final String title;
         private final String description;
 
+        public Position(LocalDate startDate, String title, String description){
+            this(startDate, LocalDate.now(), title, description);
+        }
+
         public Position(LocalDate startDate, LocalDate endDate, String title, String description){
             Objects.requireNonNull(startDate, "Не задана дата начала работы в организации");
             Objects.requireNonNull(endDate, "Не задана дата окончания работы в организации");
