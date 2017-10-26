@@ -15,10 +15,10 @@ import static org.junit.Assert.*;
 
 public abstract class AbstractStorageTest {
     protected final Storage storage;
-    Resume r1 = new Resume("Имя 1");
-    Resume r2 = new Resume("Имя 2");
-    Resume r3 = new Resume("Имя 3");
-    Resume r4 = new Resume("Имя 4");
+    private Resume r1 = new Resume("Имя 1");
+    private Resume r2 = new Resume("Имя 2");
+    private Resume r3 = new Resume("Имя 3");
+    private Resume r4 = new Resume("Имя 4");
 
     protected AbstractStorageTest(Storage storage) {
         this.storage = storage;
@@ -72,8 +72,6 @@ public abstract class AbstractStorageTest {
     public void saveNull() throws Exception {
         storage.save(null);
     }
-
-    //
 
     @Test(expected = NotExistStorageException.class)
     public void delete() throws Exception {

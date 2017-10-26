@@ -26,6 +26,26 @@ public class Resume implements Comparable<Resume> {
         return uuid;
     }
 
+    public String getFullName() {
+        return fullName;
+    }
+
+    public String getContact(ContactType contactType){
+        return contacts.get(contactType);
+    }
+
+    public Section getSection(SectionType sectionType){
+        return sections.get(sectionType);
+    }
+
+    public void addContact(ContactType contactType, String contactValue){
+        contacts.put(contactType, contactValue);
+    }
+
+    public void addSection(SectionType sectionType, Section section){
+        sections.put(sectionType, section);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -40,10 +60,6 @@ public class Resume implements Comparable<Resume> {
         if (compareByFullName == 0)
             return uuid.compareTo(o.getUuid());
         return compareByFullName;
-    }
-
-    public String getFullName() {
-        return fullName;
     }
 
     @Override
@@ -61,11 +77,5 @@ public class Resume implements Comparable<Resume> {
                 '}';
     }
 
-    public String getContact(ContactType type) {
-        return contacts.get(type);
-    }
 
-    public Section getSections(SectionType type) {
-        return sections.get(type);
-    }
 }
