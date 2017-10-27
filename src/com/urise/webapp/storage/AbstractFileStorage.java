@@ -24,7 +24,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     @Override
     public void clear() {
         File[] resumes = dir.listFiles();
-        if (dir == null) return;
+        if (resumes == null) return;
         for(File r : resumes){
             doDelete(r);
         }
@@ -32,7 +32,15 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
 
     @Override
     protected List<Resume> doCopyAll() {
-        return new ArrayList<>(storage);
+        File[] files = dir.listFiles();
+        if (files == null){
+            throw new RuntimeException("Директория недоступна");
+        }
+        List<Resume> resumes = new ArrayList<>();
+        for (File f : files){
+            resumes.add(doGet(f));
+        }
+        return resumes;
     }
 
     @Override
@@ -51,25 +59,21 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     protected abstract void doWrite(Resume r, File f);
 
     @Override
-    protected boolean isExistSearchKey(Integer index) {
-        return index >= 0;
+    protected boolean isExistSearchKey(File resume) {
+        return resume.exists();
     }
 
     @Override
-    protected Integer getSearchKey(String uuid) {
-        if (uuid == null) return -1;
-        for (int i = 0; i < storage.size(); i++) {
-            if (uuid.equals((storage.get(i).getUuid()))) {
-                return i;
-            }
-        }
-        return -1;
+    protected File getSearchKey(String uuid) {
+        if (uuid == null) return null;
+        return new File(dir, uuid);
     }
 
     @Override
     protected void doSave(Resume r, File f) {
         try{
-            f.createNewFile();
+            if (!f.createNewFile())
+                throw new IOException();
         } catch (IOException e){
             throw new RuntimeException("Ошибка при создании файла " + f.getAbsolutePath());
         }
@@ -78,7 +82,13 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
 
     @Override
     protected void doDelete(File resume) {
-        resume.delete();
+        try{
+            if (!resume.delete()){
+                throw new IOException();
+            }
+        } catch (IOException e){
+            throw new RuntimeException("Ошибка при удалении файла " + resume.getAbsolutePath());
+        }
     }
 
     @Override

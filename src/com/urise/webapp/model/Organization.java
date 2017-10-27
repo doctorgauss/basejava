@@ -19,8 +19,8 @@ public class Organization {
 
         Organization that = (Organization) o;
 
-        if (!homePage.equals(that.homePage)) return false;
-        return positions.equals(that.positions);
+        return homePage.equals(that.homePage)
+                && positions.equals(that.positions);
     }
 
     @Override
@@ -66,10 +66,10 @@ public class Organization {
 
             Position position = (Position) o;
 
-            if (!startDate.equals(position.startDate)) return false;
-            if (!endDate.equals(position.endDate)) return false;
-            if (!title.equals(position.title)) return false;
-            return description.equals(position.description);
+            return startDate.equals(position.startDate)
+                    && endDate.equals(position.endDate)
+                    && title.equals(position.title)
+                    && description.equals(position.description);
         }
 
         @Override
