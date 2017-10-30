@@ -3,8 +3,7 @@ package com.urise.webapp.storage;
 import com.urise.webapp.exception.StorageException;
 import com.urise.webapp.model.Resume;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,10 +52,14 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
 
     @Override
     protected void doUpdate(Resume r, File f) {
-        doWrite(r, f);
+        try {
+            doWrite(r, new BufferedOutputStream(new FileOutputStream(f)));
+        } catch (IOException e) {
+            throw new RuntimeException("Ошибка при записи в файл");
+        }
     }
 
-    protected abstract void doWrite(Resume r, File f);
+    protected abstract void doWrite(Resume r, OutputStream os) throws IOException;
 
     @Override
     protected boolean isExistSearchKey(File resume) {
@@ -93,8 +96,12 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
 
     @Override
     protected Resume doGet(File resume) {
-        return doRead(resume);
+        try {
+            return doRead(new BufferedInputStream(new FileInputStream(resume)));
+        } catch (IOException e) {
+            throw new RuntimeException("Ошибка чтения файла");
+        }
     }
 
-    protected abstract Resume doRead(File resume);
+    protected abstract Resume doRead(InputStream is) throws IOException;
 }
