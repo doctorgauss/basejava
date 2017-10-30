@@ -5,11 +5,11 @@ import java.util.List;
 
 public class MainFile {
     public static void main(String[] args) {
-        printNameOfFiles(new File("./src/com/urise/webapp"));
+        printNameOfFiles(new File("./src/com/urise/webapp"), "");
 
     }
 
-    public static void printNameOfFiles(File file){
+    public static void printNameOfFiles(File file, String tab){
         if (file == null || !file.exists()) return;
 
         File[] files = file.listFiles();
@@ -17,9 +17,10 @@ public class MainFile {
 
         for (File f : files){
             if (f.isDirectory()){
-                printNameOfFiles(f);
+                System.out.println(tab + f.getName());
+                printNameOfFiles(f, tab + " ");
             } else {
-                System.out.println(f.getName());
+                System.out.println(tab + f.getName());
             }
         }
     }
