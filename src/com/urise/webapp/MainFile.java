@@ -18,7 +18,7 @@ public class MainFile {
         for (File f : files){
             if (f.isDirectory()){
                 System.out.println(tab + f.getName());
-                printNameOfFiles(f, tab + " ");
+                printNameOfFiles(f, tab + "\t");
             } else {
                 System.out.println(tab + f.getName());
             }
