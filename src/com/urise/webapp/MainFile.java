@@ -8,8 +8,6 @@ import java.util.List;
 public class MainFile {
     public static void main(String[] args) {
         printNameOfFiles(new File("./src/com/urise/webapp"), "");
-        printPathName(Paths.get("./src/com/urise/webapp", "MainFile"));
-
     }
 
     public static void printNameOfFiles(File file, String tab){
@@ -27,8 +25,4 @@ public class MainFile {
             }
         }
     }
-
-    public static void printPathName(Path dir){
-        System.out.println(dir.toString());
-    };
 }
