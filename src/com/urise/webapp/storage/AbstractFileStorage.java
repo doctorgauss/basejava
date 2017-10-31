@@ -6,102 +6,100 @@ import com.urise.webapp.model.Resume;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public abstract class AbstractFileStorage extends AbstractStorage<File> {
-    private final File dir;
+    private File directory;
 
-    public AbstractFileStorage(File dir) {
-        if (dir == null) {
-            throw new RuntimeException("Директория для хранения файлов не задана");
+    protected abstract void doWrite(Resume r, OutputStream os) throws IOException;
+
+    protected abstract Resume doRead(InputStream is) throws IOException;
+
+    protected AbstractFileStorage(File directory) {
+        Objects.requireNonNull(directory, "directory must not be null");
+        if (!directory.isDirectory()) {
+            throw new IllegalArgumentException(directory.getAbsolutePath() + " is not directory");
         }
-        if (!dir.exists() || !dir.isDirectory() || !dir.canRead() || dir.canWrite()){
-            throw new RuntimeException("Директория не существует или нет доступа для записи/чтения файлов");
+        if (!directory.canRead() || !directory.canWrite()) {
+            throw new IllegalArgumentException(directory.getAbsolutePath() + " is not readable/writable");
         }
-        this.dir = dir;
+        this.directory = directory;
     }
 
     @Override
     public void clear() {
-        File[] resumes = dir.listFiles();
-        if (resumes == null) return;
-        for(File r : resumes){
-            doDelete(r);
+        File[] files = directory.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                doDelete(file);
+            }
+        }
+    }
+
+    @Override
+    public int size() {
+        String[] list = directory.list();
+        if (list == null) {
+            throw new StorageException("Directory read error", null);
+        }
+        return list.length;
+    }
+
+    @Override
+    protected File getSearchKey(String uuid) {
+        return new File(directory, uuid);
+    }
+
+    @Override
+    protected void doUpdate(Resume r, File file) {
+        try {
+            doWrite(r, new BufferedOutputStream(new FileOutputStream(file)));
+        } catch (IOException e) {
+            throw new StorageException("File write error", r.getUuid(), e);
+        }
+    }
+
+    @Override
+    protected boolean isExist(File file) {
+        return file.exists();
+    }
+
+    @Override
+    protected void doSave(Resume r, File file) {
+        try {
+            file.createNewFile();
+        } catch (IOException e) {
+            throw new StorageException("Couldn't create file " + file.getAbsolutePath(), file.getName(), e);
+        }
+        doUpdate(r, file);
+    }
+
+    @Override
+    protected Resume doGet(File file) {
+        try {
+            return doRead(new BufferedInputStream(new FileInputStream(file)));
+        } catch (IOException e) {
+            throw new StorageException("File read error", file.getName(), e);
+        }
+    }
+
+    @Override
+    protected void doDelete(File file) {
+        if (!file.delete()) {
+            throw new StorageException("File delete error", file.getName());
         }
     }
 
     @Override
     protected List<Resume> doCopyAll() {
-        File[] files = dir.listFiles();
-        if (files == null){
-            throw new RuntimeException("Директория недоступна");
+        File[] files = directory.listFiles();
+        if (files == null) {
+            throw new StorageException("Directory read error", null);
         }
-        List<Resume> resumes = new ArrayList<>();
-        for (File f : files){
-            resumes.add(doGet(f));
+        List<Resume> list = new ArrayList<>(files.length);
+        for (File file : files) {
+            list.add(doGet(file));
         }
-        return resumes;
+        return list;
     }
-
-    @Override
-    public int size() {
-        File[] resumes = dir.listFiles();
-        if(resumes == null)
-            throw new RuntimeException("Директория недоступна");
-        return resumes.length;
-    }
-
-    @Override
-    protected void doUpdate(Resume r, File f) {
-        try {
-            doWrite(r, new BufferedOutputStream(new FileOutputStream(f)));
-        } catch (IOException e) {
-            throw new RuntimeException("Ошибка при записи в файл");
-        }
-    }
-
-    protected abstract void doWrite(Resume r, OutputStream os) throws IOException;
-
-    @Override
-    protected boolean isExistSearchKey(File resume) {
-        return resume.exists();
-    }
-
-    @Override
-    protected File getSearchKey(String uuid) {
-        if (uuid == null) return null;
-        return new File(dir, uuid);
-    }
-
-    @Override
-    protected void doSave(Resume r, File f) {
-        try{
-            if (!f.createNewFile())
-                throw new IOException();
-        } catch (IOException e){
-            throw new RuntimeException("Ошибка при создании файла " + f.getAbsolutePath());
-        }
-        doUpdate(r, f);
-    }
-
-    @Override
-    protected void doDelete(File resume) {
-        try{
-            if (!resume.delete()){
-                throw new IOException();
-            }
-        } catch (IOException e){
-            throw new RuntimeException("Ошибка при удалении файла " + resume.getAbsolutePath());
-        }
-    }
-
-    @Override
-    protected Resume doGet(File resume) {
-        try {
-            return doRead(new BufferedInputStream(new FileInputStream(resume)));
-        } catch (IOException e) {
-            throw new RuntimeException("Ошибка чтения файла");
-        }
-    }
-
-    protected abstract Resume doRead(InputStream is) throws IOException;
 }

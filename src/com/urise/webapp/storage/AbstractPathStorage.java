@@ -1,5 +1,6 @@
 package com.urise.webapp.storage;
 
+import com.urise.webapp.exception.StorageException;
 import com.urise.webapp.model.Resume;
 
 import java.io.*;
@@ -8,24 +9,20 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public abstract class AbstractPathStorage extends AbstractStorage<Path> {
-    private final Path directory;
+    private Path directory;
 
     protected abstract void doWrite(Resume r, OutputStream os) throws IOException;
 
-    protected abstract Resume doRead(InputStream is);
+    protected abstract Resume doRead(InputStream is) throws IOException;
 
-    public AbstractPathStorage(String dir) {
-        if (dir == null) {
-            throw new RuntimeException("Директория для хранения файлов не задана");
-        }
+    protected AbstractPathStorage(String dir) {
         directory = Paths.get(dir);
-        if (!Files.exists(directory)
-                || !Files.isDirectory(directory)
-                || !Files.isReadable(directory)
-                || !Files.isWritable(directory)){
-            throw new RuntimeException("Директория не существует или нет доступа для записи/чтения файлов");
+        Objects.requireNonNull(directory, "directory must not be null");
+        if (!Files.isDirectory(directory) || !Files.isWritable(directory)) {
+            throw new IllegalArgumentException(dir + " is not directory or is not writable");
         }
     }
 
@@ -34,7 +31,7 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
         try {
             Files.list(directory).forEach(this::doDelete);
         } catch (IOException e) {
-            throw new RuntimeException("Ошибка при удалении директории");
+            throw new StorageException("Path delete error", null);
         }
     }
 
@@ -42,72 +39,66 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> {
     public int size() {
         String[] list = directory.list();
         if (list == null) {
-            throw new RuntimeException("Ошибка чтения директории");
+            throw new StorageException("Directory read error", null);
         }
         return list.length;
     }
 
     @Override
     protected Path getSearchKey(String uuid) {
-        if (uuid == null) return null;
         return new Path(directory, uuid);
     }
 
     @Override
-    protected void doUpdate(Resume r, Path f) {
+    protected void doUpdate(Resume r, Path Path) {
         try {
-            doWrite(r, new BufferedOutputStream(new FileOutputStream(f)));
+            doWrite(r, new BufferedOutputStream(new PathOutputStream(Path)));
         } catch (IOException e) {
-            throw new RuntimeException("Ошибка при записи в файл");
+            throw new StorageException("Path write error", r.getUuid(), e);
         }
     }
 
     @Override
-    protected boolean isExistSearchKey(Path resume) {
-        return resume.exists();
+    protected boolean isExist(Path Path) {
+        return Path.exists();
     }
 
     @Override
-    protected void doSave(Resume r, Path f) {
-        try{
-            if (!f.createNewFile())
-                throw new IOException();
-        } catch (IOException e){
-            throw new RuntimeException("Ошибка при создании файла " + f.getAbsolutePath());
-        }
-        doUpdate(r, f);
-    }
-
-    @Override
-    protected Resume doGet(Path resume) {
+    protected void doSave(Resume r, Path Path) {
         try {
-            return doRead(new BufferedInputStream(new FileInputStream(resume)));
+            Path.createNewPath();
         } catch (IOException e) {
-            throw new RuntimeException("Ошибка чтения файла");
+            throw new StorageException("Couldn't create Path " + Path.getAbsolutePath(), Path.getName(), e);
+        }
+        doUpdate(r, Path);
+    }
+
+    @Override
+    protected Resume doGet(Path Path) {
+        try {
+            return doRead(new BufferedInputStream(new PathInputStream(Path)));
+        } catch (IOException e) {
+            throw new StorageException("Path read error", Path.getName(), e);
         }
     }
 
     @Override
-    protected void doDelete(Path resume) {
-        try{
-            if (!resume.delete()){
-                throw new IOException();
-            }
-        } catch (IOException e){
-            throw new RuntimeException("Ошибка при удалении файла " + resume.getAbsolutePath());
+    protected void doDelete(Path Path) {
+        if (!Path.delete()) {
+            throw new StorageException("Path delete error", Path.getName());
         }
     }
 
     @Override
     protected List<Resume> doCopyAll() {
-        Path[] files = directory.listFiles();
-        if (files == null){
-            throw new RuntimeException("Директория недоступна");
+        Path[] Paths = directory.listPaths();
+        if (Paths == null) {
+            throw new StorageException("Directory read error", null);
         }
-        List<Resume> resumes = new ArrayList<>();
-        for (Path f : files){
-            resumes.add(doGet(f));
+        List<Resume> list = new ArrayList<>(Paths.length);
+        for (Path Path : Paths) {
+            list.add(doGet(Path));
         }
-        return resumes;
+        return list;
     }
 }
