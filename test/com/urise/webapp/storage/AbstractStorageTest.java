@@ -9,6 +9,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Arrays;
@@ -18,6 +20,7 @@ import static org.junit.Assert.*;
 
 public abstract class AbstractStorageTest {
     protected static final File STORAGE_DIR = new File("D:\\workspace_java\\basejava\\storage");
+    protected static final Path STORAGE_PATH = Paths.get("D:\\workspace_java\\basejava\\storage");
     protected final Storage storage;
 
     private static Resume R1;

@@ -4,9 +4,10 @@ import com.urise.webapp.exception.StorageException;
 import com.urise.webapp.model.Resume;
 
 import java.io.*;
+import java.nio.file.Path;
 
-public class ObjectStreamStorage extends AbstractFileStorage {
-    protected ObjectStreamStorage(File directory) {
+public class ObjectStreamStoragePath extends AbstractPathStorage {
+    protected ObjectStreamStoragePath(Path directory) {
         super(directory);
     }
 
