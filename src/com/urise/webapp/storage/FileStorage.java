@@ -8,11 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class AbstractFileStorage extends AbstractStorage<File> implements StreamStorage {
+public class FileStorage extends AbstractStorage<File> {
     private File directory;
+    private StreamStorage streamStorage;
 
-    protected AbstractFileStorage(File directory) {
+    protected FileStorage(File directory, StreamStorage streamStorage) {
         Objects.requireNonNull(directory, "directory must not be null");
+        this.streamStorage = streamStorage;
         if (!directory.isDirectory()) {
             throw new IllegalArgumentException(directory.getAbsolutePath() + " is not directory");
         }
@@ -49,7 +51,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> implemen
     @Override
     protected void doUpdate(Resume r, File file) {
         try {
-            doWrite(r, new BufferedOutputStream(new FileOutputStream(file)));
+            streamStorage.doWrite(r, new BufferedOutputStream(new FileOutputStream(file)));
         } catch (IOException e) {
             throw new StorageException("File write error", r.getUuid(), e);
         }
@@ -73,7 +75,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> implemen
     @Override
     protected Resume doGet(File file) {
         try {
-            return doRead(new BufferedInputStream(new FileInputStream(file)));
+            return streamStorage.doRead(new BufferedInputStream(new FileInputStream(file)));
         } catch (IOException e) {
             throw new StorageException("File read error", file.getName(), e);
         }
