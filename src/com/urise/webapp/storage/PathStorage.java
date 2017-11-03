@@ -59,7 +59,8 @@ public class PathStorage extends AbstractStorage<Path> {
 
     @Override
     protected boolean isExist(Path path) {
-        return !Files.isDirectory(path) && Files.exists(path);
+//        return !Files.isDirectory(path) && Files.exists(path);
+        return Files.isRegularFile(path);
     }
 
     @Override
