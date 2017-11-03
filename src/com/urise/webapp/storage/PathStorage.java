@@ -45,11 +45,7 @@ public class PathStorage extends AbstractStorage<Path> {
 
     @Override
     protected Path getSearchKey(String uuid) {
-        try {
-            return Paths.get(directory.toRealPath().toString(), uuid);
-        } catch (IOException e) {
-            throw new StorageException("File read error", null);
-        }
+        return directory.resolve(uuid);
     }
 
     @Override
@@ -63,7 +59,7 @@ public class PathStorage extends AbstractStorage<Path> {
 
     @Override
     protected boolean isExist(Path path) {
-        return Files.exists(path);
+        return !Files.isDirectory(path) && Files.exists(path);
     }
 
     @Override
