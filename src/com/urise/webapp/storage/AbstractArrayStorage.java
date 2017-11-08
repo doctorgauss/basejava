@@ -9,8 +9,12 @@ import java.util.List;
 public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
     protected static final int STORAGE_LIMIT = 10000;
 
-    protected final Resume[] storage = new Resume[STORAGE_LIMIT];
+    protected Resume[] storage = new Resume[STORAGE_LIMIT];
     protected int size = 0;
+
+    public int size() {
+        return size;
+    }
 
     public void clear() {
         Arrays.fill(storage, 0, size, null);
@@ -22,16 +26,23 @@ public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
         storage[index] = r;
     }
 
-    public void doSave(Resume r, Integer index) {
-        if (size >= STORAGE_LIMIT) {
-            throw new StorageException("База резюме переполнена", r.getUuid());
+    /**
+     * @return array, contains only Resumes in storage (without null)
+     */
+    @Override
+    public List<Resume> doCopyAll() {
+        return Arrays.asList(Arrays.copyOfRange(storage, 0, size));
+    }
+
+    @Override
+    protected void doSave(Resume r, Integer index) {
+        if (size == STORAGE_LIMIT) {
+            throw new StorageException("Storage overflow", r.getUuid());
         } else {
             insertElement(r, index);
             size++;
         }
     }
-
-    protected abstract void insertElement(Resume r, int index);
 
     @Override
     public void doDelete(Integer index) {
@@ -40,25 +51,18 @@ public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
         size--;
     }
 
-    protected abstract void fillDeletedElement(int index);
-
-
-    public int size() {
-        return size;
-    }
-
-    @Override
     public Resume doGet(Integer index) {
         return storage[index];
-    }
-
-    @Override
-    protected List<Resume> doCopyAll() {
-        return Arrays.asList(Arrays.copyOf(storage, size));
     }
 
     @Override
     protected boolean isExist(Integer index) {
         return index >= 0;
     }
+
+    protected abstract void fillDeletedElement(int index);
+
+    protected abstract void insertElement(Resume r, int index);
+
+    protected abstract Integer getSearchKey(String uuid);
 }

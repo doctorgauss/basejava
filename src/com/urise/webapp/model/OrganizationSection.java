@@ -1,18 +1,23 @@
 package com.urise.webapp.model;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import java.util.*;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class OrganizationSection extends Section {
     private static final long serialVersionUID = 1L;
 
-    private final List<Organization> organizations;
+    private List<Organization> organizations;
 
-    public OrganizationSection(Organization ... organizations){
+    public OrganizationSection() {}
+
+    public OrganizationSection(Organization... organizations) {
         this(Arrays.asList(organizations));
     }
 
     public OrganizationSection(List<Organization> organizations) {
-        Objects.requireNonNull(organizations, "Организация не задана");
+        Objects.requireNonNull(organizations, "organizations must not be null");
         this.organizations = organizations;
     }
 
