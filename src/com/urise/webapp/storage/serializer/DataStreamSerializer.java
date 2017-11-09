@@ -1,7 +1,6 @@
 package com.urise.webapp.storage.serializer;
 
-import com.urise.webapp.model.ContactType;
-import com.urise.webapp.model.Resume;
+import com.urise.webapp.model.*;
 
 import java.io.*;
 import java.util.Map;
@@ -20,6 +19,16 @@ public class DataStreamSerializer implements StreamSerializer {
                 dos.writeUTF(entry.getValue());
             }
             // TODO implements sections
+            Map<SectionType, Section> sections = r.getSections();
+            dos.writeInt(sections.size());
+            for (Map.Entry<SectionType, Section> entry : sections.entrySet()) {
+                if (entry.getValue().getClass() == TextSection.class){
+                    dos.writeUTF(entry.getKey().name());
+                    dos.writeUTF(
+                            ((TextSection)entry.getValue()).getContent()
+                    );
+                }
+            }
         }
     }
 
@@ -34,6 +43,7 @@ public class DataStreamSerializer implements StreamSerializer {
                 resume.addContact(ContactType.valueOf(dis.readUTF()), dis.readUTF());
             }
             // TODO implements sections
+
             return resume;
         }
     }
