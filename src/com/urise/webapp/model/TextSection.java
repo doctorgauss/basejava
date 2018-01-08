@@ -3,9 +3,15 @@ package com.urise.webapp.model;
 import java.util.Objects;
 
 public class TextSection extends Section {
+
     private static final long serialVersionUID = 1L;
 
-    private final String content;
+    public static final TextSection EMPTY = new TextSection("");
+
+    private String content;
+
+    public TextSection() {
+    }
 
     public TextSection(String content) {
         Objects.requireNonNull(content, "content must not be null");
